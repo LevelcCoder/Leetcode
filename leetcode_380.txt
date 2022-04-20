@@ -1,0 +1,98 @@
+/*c++ unoderedmap emplace() find() at() erase()不能像map的函数那样随便该其value值，但相对的其效率更高，这个题的重点在于remove函数实现时要注意numset[len-1]的下标是会变的，也就是说一开始存的的该值对应的下标是会变的，此时再用原来的下标去取数得到的数是错的*/
+first version 80%
+class RandomizedSet {
+public:
+    int len;
+    int *numset; 
+    unordered_map<int,int> record;
+    RandomizedSet() {
+        len = 0;
+        numset = new int[200010];
+    }
+    
+    bool insert(int val) {
+        if(record.find(val)!=record.end()) return false;
+        numset[len] = val;
+        record.emplace(val,len);
+        len++;
+    
+        return true;
+    }
+    
+    bool remove(int val) {
+        auto del = record.find(val);
+        if(del==record.end()) return false;
+        int pos = record.at(val);
+        
+        numset[pos] = numset[len-1];
+       
+        record.erase(del);
+        auto change = record.find(numset[pos]);
+        if(change!=record.end()){
+            record.erase(change);
+        record.emplace(numset[pos],pos);
+        }
+        
+        
+        len--;
+        return true;
+        
+    }
+    
+    int getRandom() {
+        int poi = rand()%len;
+        return numset[poi];
+    }
+};
+
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * RandomizedSet* obj = new RandomizedSet();
+ * bool param_1 = obj->insert(val);
+ * bool param_2 = obj->remove(val);
+ * int param_3 = obj->getRandom();
+ */
+//////////////////////////////////////////////////////////////
+second version 80% 67%
+class RandomizedSet {
+public:
+    RandomizedSet() {
+        srand((unsigned)time(NULL));
+    }
+    
+    bool insert(int val) {
+        if (indices.count(val)) {
+            return false;
+        }
+        int index = nums.size();
+        nums.emplace_back(val);
+        indices[val] = index;
+        return true;
+    }
+    
+    bool remove(int val) {
+        if (!indices.count(val)) {
+            return false;
+        }
+
+        int index = indices[val];
+        int last = nums.back();
+        nums[index] = last;
+        indices[last] = index;//这里可以直接改
+
+        nums.pop_back();
+        indices.erase(val);
+        return true;
+    }
+    
+    int getRandom() {
+        int randomIndex = rand()%nums.size();
+        return nums[randomIndex];
+    }
+private:
+    vector<int> nums;
+    unordered_map<int, int> indices;
+};
+
+//作者：LeetCode-Solution
+
