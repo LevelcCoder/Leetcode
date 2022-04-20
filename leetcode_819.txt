@@ -1,0 +1,77 @@
+//一个easy但是自己脑子一直在抽风，最后写的时间复杂度也很差，//而且忘了很多map函数的用法，也忘了tolower()
+//first version 15% word会有空值
+class Solution {
+public:
+    string mostCommonWord(string paragraph, vector<string>& banned) {
+        map<string,int> rec;
+        paragraph+=" ";//这一步很关键,
+        string word = "";
+        for(int i=0;i<paragraph.size();i++){
+            if(isalpha(paragraph[i])){
+                
+                if(paragraph[i]>='A'&&paragraph[i]<='Z')
+                word+=(paragraph[i]-'A'+'a');
+                else{
+                    word+=paragraph[i];
+                }
+            }
+            else{
+                if(rec.find(word)!=rec.end()) rec[word]++;
+                else if(word.size())  rec.emplace(word,1);
+                word = "";
+            }
+        }
+
+        for(int i=0;i<banned.size();i++){
+            if(rec.count(banned[i])>0) rec[banned[i]]= 0;
+        }
+
+        map<string,int>::iterator it = rec.begin();
+        int cnt = it->second;
+        word = it->first;
+        
+        while(it!=rec.end()){
+            if(it->second>cnt){
+                word = it->first;
+                cnt = it->second;
+            }
+            cout<<it->first<<" "<<it->second<<endl;
+            it++;
+        }
+        return word;
+    }
+};
+// second version 100%
+class Solution {
+public:
+    string mostCommonWord(string paragraph, vector<string>& banned) {
+        unordered_set<string> bannedSet;//set需要练习
+        for (auto & word : banned) {
+            bannedSet.emplace(word);
+        }
+        int maxFrequency = 0;
+        unordered_map<string, int> frequencies;
+        string word;
+        int length = paragraph.size();
+        for (int i = 0; i <= length; i++) {//这里可以等于length
+            if (i < length && isalpha(paragraph[i])) {
+                word.push_back(tolower(paragraph[i]));
+            } else if (word.size() > 0) {
+                if (!bannedSet.count(word)) {
+                    frequencies[word]++;
+                    maxFrequency = max(maxFrequency, frequencies[word]);
+                }
+                word = "";
+            }
+        }
+        string mostCommon = "";
+        for (auto &[word , frequency] : frequencies) {
+            if (frequency == maxFrequency) {
+                mostCommon = word;
+                break;
+            }
+        }
+        return mostCommon;
+    }
+};
+

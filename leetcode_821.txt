@@ -1,0 +1,30 @@
+//easy 但是思路还是不够清晰
+class Solution {
+public:
+    vector<int> shortestToChar(string s, char c) {
+        vector<int> ans;
+        int leftrec[s.size()];
+        int rightrec[s.size()];
+        int left = INT_MIN+10001;
+        int right = INT_MAX;//这里很重要，松弛度
+       
+        for(int i=0;i<s.size();i++){
+            if(s[i]==c){
+               left = i;
+            }
+            
+            leftrec[i] = i - left;
+        }
+        for(int j=s.size()-1;j>-1;j--){
+            if(s[j]==c){
+               right = j;
+            }
+            
+            rightrec[j] = right - j;
+        }
+        for(int i=0;i<s.size();i++){
+            ans.push_back(min(leftrec[i],rightrec[i]));
+        }
+        return ans;
+    }
+};
