@@ -1,0 +1,91 @@
+//这个由遍历做到了100%，需要注意'\t'和'\n'占一个字符位
+class Solution {
+public:
+    int lengthLongestPath(string input) {
+        input += "\n";
+        int i = 0;
+        int lay_cnt = 0;
+        int pans = 0;
+        bool isFile = false;
+        string root = "";
+        map<int,int> ans;
+
+        vector<int> allAns;
+        for(int i=0;i<input.size();i++){
+            if(input[i]=='\t'){
+                lay_cnt++;
+            }
+            else if(input[i]=='\n'){
+                ans[lay_cnt] = root.size() + ans[lay_cnt-1];//这里很重要
+                if(isFile){
+                    ans[lay_cnt] +=  lay_cnt;
+                    allAns.push_back(ans[lay_cnt]);
+                    isFile = false;
+                } 
+               
+                root = "";
+                lay_cnt = 0;
+            }
+            
+            else{
+                root += input[i];
+                if(input[i]=='.') isFile = true;
+                
+            }
+        }
+        int fin = 0;
+        for(int i:allAns){
+            fin = max(fin,i);
+        }
+        return fin;
+    }
+   
+
+};
+//官方用栈做的，时间复杂度更好
+class Solution {
+public:
+    int lengthLongestPath(string input) {
+        int n = input.size();
+        int pos = 0;
+        int ans = 0;
+        stack<int> st;
+
+        while (pos < n) {
+            /* 检测当前文件的深度 */
+            int depth = 1;
+            while (pos < n && input[pos] == '\t') {
+                pos++;
+                depth++;
+            }
+            /* 统计当前文件名的长度 */   
+            int len = 0; 
+            bool isFile = false;     
+            while (pos < n && input[pos] != '\n') {
+                if (input[pos] == '.') {
+                    isFile = true;
+                }
+                len++;
+                pos++;
+            }
+            /* 跳过换行符 */
+            pos++;
+
+            while (st.size() >= depth) {
+                st.pop();
+            }
+            if (!st.empty()) {
+                len += st.top() + 1;
+            }
+            if (isFile) {
+                ans = max(ans, len);
+            } else {
+                st.emplace(len);
+            }
+        }
+        return ans;
+    }
+};
+
+//作者：LeetCode-Solution
+//链接：https://leetcode-cn.com/problems/longest-absolute-//file-path/solution/wen-jian-de-zui-chang-jue-dui-lu-jing-by-//fi0r/
