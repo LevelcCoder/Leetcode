@@ -1,0 +1,45 @@
+// 140ms 16.69%寄寄寄寄寄寄寄寄寄寄寄寄寄寄寄寄寄
+class Solution {
+public:
+    int maxRotateFunction(vector<int>& nums) {
+        int left = nums.size() - 1;
+        int len = nums.size();
+        int sum = 0;
+        int ans = INT_MIN;
+        vector<int> temp_nums;
+        for(int i=0;i<len;i++){
+            nums.push_back(nums[i]);
+            sum += i*nums[i];
+            temp_nums.push_back(nums[i]);
+        }
+        ans = max(sum,ans);
+        for(int i=1;i<nums.size();i++){
+            nums[i] += nums[i-1];
+        }
+        while(left>0){
+            sum -= (len-1)*temp_nums[left];
+            sum += nums[left+len-1] - nums[left];
+            ans = max(sum,ans);
+            left--;
+        }
+        return ans;
+    }
+};
+//看看官方题解
+class Solution {
+public:
+    int maxRotateFunction(vector<int>& nums) {
+        int f = 0, n = nums.size();
+        int numSum = accumulate(nums.begin(), nums.end(), 0);
+        for (int i = 0; i < n; i++) {
+            f += i * nums[i];
+        }
+        int res = f;
+        for (int i = n - 1; i > 0; i--) {
+            f += numSum - n * nums[i];//妙啊
+            res = max(res, f);
+        }
+        return res;
+    }
+};
+
