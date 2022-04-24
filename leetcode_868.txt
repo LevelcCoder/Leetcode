@@ -1,0 +1,23 @@
+//昨天的hard太难了，打算等五一再学习一下二维凸包算法
+//今天的居然和官方的一模一样，惊了
+class Solution {
+public:
+    int binaryGap(int n) {
+        int low_pos = -1;
+        int len = 0;
+        int ans = 0;
+        while(n){
+            if(n%2==1){
+                if(low_pos>-1){
+                    ans = max(ans,len-low_pos);
+                }
+
+                low_pos = len;
+            }
+            len++;
+            
+            n/=2;
+        }
+        return ans;
+    }
+};
