@@ -1,0 +1,43 @@
+//5.7%.........
+class Solution {
+public:
+    vector<int> cnums;
+    map<int,vector<int> > rec;
+    Solution(vector<int>& nums) {
+        for(int i=0;i<nums.size();i++){
+            cnums.push_back(nums[i]);
+            if(rec.find(nums[i])==rec.end()){
+                vector<int> samenums;
+                rec[nums[i]] = samenums;
+            }
+            rec[nums[i]].push_back(i);
+        }
+    }
+    
+    int pick(int target) {
+        int i = rand()%rec[target].size();
+        return rec[target][i];
+    }
+};
+
+//官方的题解:蓄水池抽样
+class Solution {
+    vector<int> &nums;
+public:
+    Solution(vector<int> &nums) : nums(nums) {}
+
+    int pick(int target) {
+        int ans;
+        for (int i = 0, cnt = 0; i < nums.size(); ++i) {
+            if (nums[i] == target) {
+                ++cnt; // 第 cnt 次遇到 target
+                if (rand() % cnt == 0) {
+                    ans = i;
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+
