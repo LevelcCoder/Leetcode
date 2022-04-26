@@ -1,0 +1,49 @@
+//easy one but 50%
+class Solution {
+public:
+    int projectionArea(vector<vector<int>>& grid) {
+        int higher = 0;
+        int ans = 0;
+        int n = grid.size();
+        for(int i=0;i<n;i++){
+            higher = 0;
+            for(int j=0;j<n;j++){
+                higher = max(higher,grid[i][j]);
+            }
+            ans += higher;
+            
+        }
+        higher = 0;
+        for(int j=0;j<n;j++){
+            higher = 0;
+            for(int i=0;i<n;i++){
+                if(grid[i][j]!=0) ans++;
+                higher = max(higher,grid[i][j]);
+            }
+            ans += higher;
+            
+        }
+        return ans;
+    }
+};
+
+//官方 96%
+class Solution {
+public:
+    int projectionArea(vector<vector<int>> &grid) {
+        int n = grid.size();
+        int xyArea = 0, yzArea = 0, zxArea = 0;
+        for (int i = 0; i < n; i++) {
+            int yzHeight = 0, zxHeight = 0;
+            for (int j = 0; j < n; j++) {
+                xyArea += grid[i][j] > 0 ? 1 : 0;
+                yzHeight = max(yzHeight, grid[j][i]);
+                zxHeight = max(zxHeight, grid[i][j]);//还可以这样，学到了
+            }
+            yzArea += yzHeight;
+            zxArea += zxHeight;
+        }
+        return xyArea + yzArea + zxArea;
+    }
+};
+
