@@ -1,0 +1,35 @@
+//两次遍历，牺牲空间换时间
+class Solution {
+public:
+    vector<int> sortArrayByParity(vector<int>& nums) {
+        vector<int> ans;
+        int n = nums.size();
+        for(int i=0;i<n;i++){
+            if(nums[i]%2==0)
+            ans.push_back(nums[i]);
+        }
+        for(int i=0;i<n;i++){
+            if(nums[i]%2==1)
+            ans.push_back(nums[i]);
+        }
+        return ans;
+    }
+};
+//better way 双指针
+class Solution {
+public:
+    vector<int> sortArrayByParity(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> res(n);
+        int left = 0, right = n - 1;
+        for (auto & num : nums) {
+            if (num % 2 == 0) {
+                res[left++] = num;
+            } else {
+                res[right--] = num;//妙啊
+            }
+        }
+        return res;
+    }
+};
+
