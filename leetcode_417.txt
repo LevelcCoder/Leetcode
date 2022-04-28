@@ -1,0 +1,133 @@
+//正向搜索直接超时，然后按官方的解法来反向搜索但是还是只有8%，这个题反向搜索时可以不用设置visited，反向搜索后用数组将数据记录了下来，BFS快一点。
+class Solution {
+public:
+    vector<vector<int>> heights;
+    int Pac[201][201] = {0};
+    int Alt[201][201] = {0};
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        this->heights = heights;
+        int m = heights.size();
+        int n = heights[0].size();
+        vector<vector<int> > ans;
+        vector<vector<bool>> pac(m, vector<bool>(n, false));/c++还能这样啊
+        vector<vector<bool>> atl(m, vector<bool>(n, false));//还可以这样!!!!!
+////////////////////////////////////////
+        for(int i=0;i<m;i++){
+            bfs(i,0,pac);
+
+        }
+        for(int j=0;j<n;j++){
+            bfs(0,j,pac);
+        }
+        for(int i=0;i<m;i++){
+            bfs(i,n-1,atl);
+
+        }
+        for(int j=0;j<n;j++){
+            bfs(m-1,j,atl);
+        }//搜索
+///////////////////////////////////////
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(pac[i][j]&&atl[i][j])
+                ans.push_back({i,j});
+            }
+        }
+        return ans;
+    }
+    void bfs(int si,int sj,vector<vector<bool>> &ocean){
+        queue<vector<int> > q;
+        int visited[201][201] = {0};
+        ocean[si][sj] = true;
+        q.push({si,sj});
+        int r[4][2] = {{0,-1},{0,1},{-1,0},{1,0}};
+        
+        while(!q.empty()){
+            
+            vector<int> first = q.front();
+            q.pop();
+            
+            for(int pos=0;pos<4;pos++){
+                int x = first[0] + r[pos][0];
+                int y = first[1] + r[pos][1];
+                if(x>-1&&y>-1&&x<heights.size()&&y<heights[0].size()) 
+                    {
+                        
+                        
+                            if(heights[x][y]>=heights[first[0]][first[1]]&&!ocean[x][y]){
+                                ocean[x][y] = true;
+                                q.push({x,y});
+                            }
+                       
+                    }
+                
+            }
+            
+        }
+        return ;
+    }
+};
+//官方的题解，适当剪枝了
+static const int dirs[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+class Solution {
+public:
+    vector<vector<int>> heights;
+
+    void bfs(int row, int col, vector<vector<bool>> & ocean) {
+        if (ocean[row][col]) {//这里可以不用进入for循环了
+            return;
+        }
+        int m = heights.size();
+        int n = heights[0].size();
+        ocean[row][col] = true;
+        queue<pair<int, int>> qu;
+        qu.emplace(row, col);
+        while (!qu.empty()) {
+            auto [row, col] = qu.front();
+            qu.pop();
+            for (int i = 0; i < 4; i++) {
+                int newRow = row + dirs[i][0], newCol = col + dirs[i][1];
+                if (newRow >= 0 && newRow < m && newCol >= 0 && newCol < n && heights[newRow][newCol] >= heights[row][col] && !ocean[newRow][newCol]) {
+                    ocean[newRow][newCol] = true;
+                    qu.emplace(newRow, newCol);
+                }
+            }
+        }
+    }
+
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        this->heights = heights;
+        int m = heights.size();
+        int n = heights[0].size();
+        vector<vector<bool>> pacific(m, vector<bool>(n, false));
+        vector<vector<bool>> atlantic(m, vector<bool>(n, false));
+
+        for (int i = 0; i < m; i++) {
+            bfs(i, 0, pacific);
+        }
+        for (int j = 1; j < n; j++) {
+            bfs(0, j, pacific);
+        }
+        for (int i = 0; i < m; i++) {
+            bfs(i, n - 1, atlantic);
+        }
+        for (int j = 0; j < n - 1; j++) {
+            bfs(m - 1, j, atlantic);
+        }
+        vector<vector<int>> result;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (pacific[i][j] && atlantic[i][j]) {
+                    vector<int> cell;
+                    cell.emplace_back(i);
+                    cell.emplace_back(j);
+                    result.emplace_back(cell);
+                }
+            }
+        }
+        return result;
+    }
+};
+
+
