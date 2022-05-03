@@ -1,0 +1,67 @@
+//58% but too mush storage memory
+bool cmp(string log1,string log2){
+        int i=0;
+        int j=0;
+        int n1 = log1.size();
+        int n2 = log2.size();
+        for(;i<n1&&log1[i]!=' ';i++);
+        for(;j<n2&&log2[j]!=' ';j++);
+        if(log1.substr(i,n1-i)==log2.substr(j,n2-j)) return log1.substr(0,i)<log2.substr(0,j);
+        return log1.substr(i,n1-i)<log2.substr(j,n2-j);
+    }
+class Solution {
+public:
+    
+    bool isDig(string log){
+        int i = 0;
+        int n = log.size();
+        for(;i<n&&log[i]!=' ';i++);
+        while(i<n){
+            if(isalpha(log[i])) return false;
+            i++;
+        }
+        return true;
+    }
+    vector<string> reorderLogFiles(vector<string>& logs) {
+        vector<string> ans;
+        for(string log:logs){
+            if(!isDig(log)){
+                ans.push_back(log);
+            }
+        }
+        sort(ans.begin(),ans.end(),cmp);
+        for(string log:logs){
+            if(isDig(log)){
+                ans.push_back(log);
+            }
+        }
+        return ans;
+    }
+    
+};
+//降低了内存消耗，系统性地自定义排序了、
+class Solution {
+public:
+    vector<string> reorderLogFiles(vector<string>& logs) {
+        stable_sort(logs.begin(), logs.end(), [&](const string & log1, const string & log2) {
+            int pos1 = log1.find_first_of(" ");
+            int pos2 = log2.find_first_of(" ");//这个函数需要记住
+            bool isDigit1 = isdigit(log1[pos1 + 1]);
+            bool isDigit2 = isdigit(log2[pos2 + 1]);
+            if (isDigit1 && isDigit2) {
+                return false;
+            }
+            if (!isDigit1 && !isDigit2) {//两个都是字母日志的情况
+                string s1 = log1.substr(pos1);
+                string s2 = log2.substr(pos2);
+                if (s1 != s2) {
+                    return s1 < s2;
+                }
+                return log1 < log2;
+            }
+            return isDigit1 ? false : true;
+        });
+        return logs;
+    }
+};
+
