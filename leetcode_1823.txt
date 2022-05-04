@@ -1,0 +1,51 @@
+//约瑟夫环，自己的办法是直接链表模拟，但实际上应该通过递归找到规律
+class List_node{
+public:
+    int val;
+    List_node *next;
+};
+class Solution {
+public:
+    int findTheWinner(int n, int k) {
+        int winner = k;
+        List_node *head = new List_node();
+        List_node *Head = head;
+        List_node *pre = head;
+        for(int i=1;i<=n;i++){
+            
+            head->val = i;
+            head->next = new List_node();
+            pre = head;
+            head = head->next;
+        }
+        pre->next = Head;
+        head = Head;
+        int cnt = k;
+        while(n>1){
+            cnt = k;
+            while(cnt>1){
+                pre = head;
+                head = head->next;
+                cnt--;
+            }
+            pre->next = head->next;
+            delete head;
+            head = pre->next;
+            n--;
+        }
+        return head->val;
+    }
+};
+//递归找到规律
+f(n,m)=(f(n-1,m)+m)%n//下标从零开始
+f(n,m)指n个人，报第m个编号出列最终编号
+
+class Solution {
+public:
+    int findTheWinner(int n, int k) {
+        if (n == 1) {
+            return 1;
+        }
+        return (k + findTheWinner(n - 1, k) - 1) % n + 1;
+    }
+};
