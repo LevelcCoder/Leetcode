@@ -1,0 +1,38 @@
+//用了二分，但是内存会爆掉
+class RecentCounter {
+public:
+    int cnt;
+    int allpings[10001];
+    RecentCounter() {
+        cnt = 0;
+        
+    }
+    
+    int ping(int t) {
+        allpings[cnt] = t;
+        cnt++;
+        return cnt - (lower_bound(allpings,allpings+cnt,t-3000) - allpings);
+    }
+};
+
+/**
+ * Your RecentCounter object will be instantiated and called as such:
+ * RecentCounter* obj = new RecentCounter();
+ * int param_1 = obj->ping(t);
+ */
+
+//官方的队列,而且快很多
+class RecentCounter {
+    queue<int> q;
+public:
+    RecentCounter() {}
+
+    int ping(int t) {
+        q.push(t);
+        while (q.front() < t - 3000) {
+            q.pop();
+        }
+        return q.size();
+    }
+};
+
