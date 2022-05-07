@@ -1,0 +1,106 @@
+//要有一个清晰的思路，还是bfs
+class Solution {
+public:
+    int cnt = 0;
+    void bfs(string str,string end,vector<string>& bank){
+            if(str==end) return ;
+            queue<string> bq;
+            map<string,bool> changed;
+            bq.push(str);
+            changed.emplace(str,true);
+            map<string,string> path;
+
+            while(!bq.empty()){
+                string fstr = bq.front();
+                if(fstr==end) break;
+                
+                bq.pop();
+
+                for(string gene:bank){
+                int diff = 0;
+                for(int i=0;i<8;i++){
+                    if(gene[i]!=fstr[i]) diff++;
+                }
+
+                if(diff==1){
+                    if(changed.find(gene)==changed.end()){
+                        bq.push(gene);
+                        path.emplace(gene,fstr);
+                        changed.emplace(gene,true);
+                    }
+                    
+                }
+                
+                } 
+               
+                
+            }
+            if(bq.empty()) cnt = -1;
+            else{
+                while(end!=str){
+                    end = path[end];
+                    cnt++;
+                }
+                
+            }
+            return ;
+            
+        }
+    int minMutation(string start, string end, vector<string>& bank) {
+       
+        for(string legal_change:bank){
+            if(legal_change==end){
+                bfs(start,end,bank);
+                return cnt;
+            }
+        }
+        return -1;
+    }
+};
+//官方的bfs，可以参考一下
+class Solution {
+public:    
+    int minMutation(string start, string end, vector<string>& bank) {
+        unordered_set<string> cnt;
+        unordered_set<string> visited;
+        char keys[4] = {'A', 'C', 'G', 'T'};        
+        for (auto & w : bank) {
+            cnt.emplace(w);
+        }
+        if (start == end) {
+            return 0;
+        }
+        if (!cnt.count(end)) {
+            return -1;
+        }
+        queue<string> qu;
+        qu.emplace(start);
+        visited.emplace(start);
+        int step = 1;
+        while (!qu.empty()) {
+            int sz = qu.size();
+            for (int i = 0; i < sz; i++) {
+                string curr = qu.front();
+                qu.pop();
+                for (int j = 0; j < 8; j++) {
+                    for (int k = 0; k < 4; k++) {
+                        if (keys[k] != curr[j]) {
+                            string next = curr;
+                            next[j] = keys[k];
+                            if (!visited.count(next) && cnt.count(next)) {
+                                if (next == end) {
+                                    return step;
+                                }
+                                qu.emplace(next);
+                                visited.emplace(next);
+                            }
+                        }
+                    }
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+};
+
