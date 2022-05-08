@@ -1,0 +1,20 @@
+//自己没想出来，原来原地哈希是用swap实现的，学到了！！
+class Solution {
+public:
+    vector<int> findDuplicates(vector<int>& nums) {
+        int n = nums.size();
+        for (int i = 0; i < n; ++i) {/*每一次交换操作会使得至少一个元素被交换到对应的正确位置，因此交换的次数为 O(n)O(n)，总时间复杂度为 O(n)O(n)。*/
+            while (nums[i] != nums[nums[i] - 1]) {
+                swap(nums[i], nums[nums[i] - 1]);
+            }
+        }
+        vector<int> ans;
+        for (int i = 0; i < n; ++i) {
+            if (nums[i] - 1 != i) {
+                ans.push_back(nums[i]);
+            }
+        }
+        return ans;
+    }
+};
+
