@@ -1,0 +1,55 @@
+//三角形面积计算模拟 40%
+class point{
+public:
+      int x;
+      int y;
+};
+class Solution {
+public:
+    double largestTriangleArea(vector<vector<int>>& points) {
+        double ans = 0;
+        int n = points.size();
+        vector<point> Points;
+        for(int i=0;i<n;i++){
+            point p;
+            p.x = points[i][0];
+            p.y = points[i][1];
+            Points.push_back(p);
+        }
+        for(point a:Points){
+            for(point b:Points){
+                for(point c:Points){
+                    if(!(a.x==b.x&&a.y==b.y)&&!(a.x==c.x&&a.y==c.y)&&!(c.x==b.x&&c.y==b.y)){
+                        double lab = sqrt(1.0*((b.x-a.x)*(b.x-a.x)+(b.y-a.y)*(b.y-a.y)));
+                        double k = 1.0*(b.y-a.y)/(b.x-a.x);
+                        double kb = a.y - k*a.x;
+                        double dis = abs(k*c.x-c.y+kb)/sqrt(k*k+1);
+                        ans = max(ans,lab*dis/2);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+//行列式计算 70%
+class Solution {
+public:
+    double triangleArea(int x1, int y1, int x2, int y2, int x3, int y3) {
+        return 0.5 * abs(x1 * y2 + x2 * y3 + x3 * y1 - x1 * y3 - x2 * y1 - x3 * y2);
+    }
+
+    double largestTriangleArea(vector<vector<int>> & points) {
+        int n = points.size();
+        double ret = 0.0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                for (int k = j + 1; k < n; k++) {
+                    ret = max(ret, triangleArea(points[i][0], points[i][1], points[j][0], points[j][1], points[k][0], points[k][1]));
+                }
+            }
+        }
+        return ret;
+    }
+};
+
