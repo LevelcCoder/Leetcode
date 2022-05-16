@@ -1,0 +1,50 @@
+//中序遍历 80%
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
+        if(root==NULL) return NULL;
+
+        TreeNode* lnode = inorderSuccessor(root->left, p);
+
+        if(lnode!=NULL) return lnode;
+
+        if(root->val>p->val) return root;
+        
+        return inorderSuccessor(root->right, p);
+    }
+};
+
+//官方，利用二叉搜索树来二分搜索 60%
+class Solution {
+public:
+    TreeNode* inorderSuccessor(TreeNode* root, TreeNode* p) {
+        TreeNode *successor = nullptr;
+        if (p->right != nullptr) {
+            successor = p->right;
+            while (successor->left != nullptr) {
+                successor = successor->left;
+            }
+            return successor;
+        }
+        TreeNode *node = root;
+        while (node != nullptr) {
+            if (node->val > p->val) {
+                successor = node;
+                node = node->left;
+            } else {
+                node = node->right;
+            }
+        }
+        return successor;
+    }
+};
+
