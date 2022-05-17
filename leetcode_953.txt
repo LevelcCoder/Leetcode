@@ -1,0 +1,53 @@
+//不熟练的字典序排序，错了好几次.......
+class Solution {
+public:
+    bool isAlienSorted(vector<string>& words, string order) {
+        string last = words[0];
+        int dic[26] = {0};
+        for(int i=0;i<26;i++){
+            dic[order[i]-'a'] = i;
+        }
+        for(int i=1;i<words.size();i++){
+            int j = 0;
+            for(;j<words[i].size()&&j<last.size()&&dic[last[j]-'a']==dic[words[i][j]-'a'];j++);
+            if(j==last.size()) continue;
+            if(j==words[i].size()) return false;
+            
+            if(dic[last[j]-'a']>dic[words[i][j]-'a']) return false;
+            last = words[i];
+        }
+        return true;
+    }
+};
+//官方解法
+class Solution {
+public:
+    bool isAlienSorted(vector<string>& words, string order) {
+        vector<int> index(26);
+        for (int i = 0; i < order.size(); i++) {
+            index[order[i] - 'a'] = i;
+        }
+        for (int i = 1; i < words.size(); i++) {
+            bool valid = false;
+            for (int j = 0; j < words[i - 1].size() && j < words[i].size(); j++) {
+                int prev = index[words[i - 1][j] - 'a'];
+                int curr = index[words[i][j] - 'a'];
+                if (prev < curr) {
+                    valid = true;
+                    break;
+                } else if (prev > curr) {
+                    return false;
+                }
+            }
+            if (!valid) {
+                /* 比较两个字符串的长度 */
+                if (words[i - 1].size() > words[i].size()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+};
+
+
