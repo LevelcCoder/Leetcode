@@ -1,0 +1,45 @@
+//二分查找 lower_bound如果找不到则会返回last
+class Solution {
+public:
+    vector<int> findRightInterval(vector<vector<int>>& intervals) {
+        vector<int> start;
+        map<int,int> start2pos;
+        for(int i=0;i<intervals.size();i++){
+            start.push_back(intervals[i][0]);
+            start2pos.emplace(intervals[i][0],i);
+        }
+        sort(start.begin(),start.end());
+        vector<int> ans;
+        for(int i=0;i<intervals.size();i++){
+            int key_pos = lower_bound(start.begin(),start.end(),intervals[i][1]) - start.begin();
+            if(key_pos>=start.size()) ans.push_back(-1);
+            else{
+                ans.push_back(start2pos[start[key_pos]]);
+            }
+        }
+        return ans;
+    }
+};
+//官方的二分查找 pair<int,int>
+class Solution {
+public:
+    vector<int> findRightInterval(vector<vector<int>>& intervals) {
+        vector<pair<int, int>> startIntervals;
+        int n = intervals.size();
+        for (int i = 0; i < n; i++) {
+            startIntervals.emplace_back(intervals[i][0], i);
+        }
+        sort(startIntervals.begin(), startIntervals.end());
+
+        vector<int> ans(n, -1);
+        for (int i = 0; i < n; i++) {
+            auto it = lower_bound(startIntervals.begin(), startIntervals.end(), make_pair(intervals[i][1], 0));
+            if (it != startIntervals.end()) {
+                ans[i] = it->second;
+            }
+        }
+        return ans;
+    }
+};
+
+
