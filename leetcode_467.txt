@@ -1,0 +1,91 @@
+//环绕字符串中唯一的子字符串，动态规划但是只有5%
+class Solution {
+public:
+    int findSubstringInWraproundString(string p) {
+        if(p.size()==1) return 1;
+        int ans = 0;
+        char last = p[0];
+        int substr_cnt = 1;
+        map<char,int> substr;
+        substr.emplace(p[0],1);
+        for(int i=1;i<p.size();i++){
+            substr.emplace(p[i],1);
+            if((p[i]-last+26)%26==1){
+                substr_cnt++;
+            }
+            else {
+                
+                if(substr.find(p[i-substr_cnt])==substr.end()){
+                    substr.emplace(p[i-substr_cnt],substr_cnt);
+                }
+                else if(substr_cnt>substr[p[i-substr_cnt]])
+                substr[p[i-substr_cnt]] = substr_cnt;
+                
+                substr_cnt = 1;
+            }
+           
+            last = p[i];
+        }
+        last = p[p.size()-1];
+        int lastcnt = 1;
+        for(int i=p.size()-2;i>-1;i--){
+            if((last-p[i]+26)%26!=1){
+                break;
+            }
+            last = p[i];
+            lastcnt++;
+        }
+        if(substr[last]<lastcnt)
+        substr[last] = lastcnt;
+
+        int longestlen = 1;
+
+        for(int i=0;i<26;i++){
+            if(substr.find('a'+i)!=substr.end()){
+                int len = substr['a'+i];
+                longestlen = max(longestlen,len);
+                
+                for(int j=1;j<len;j++){
+                    if(substr.find('a'+(i+j)%26)==substr.end()){
+                        substr.emplace('a'+(i+j)%26,len-j);
+                    }
+                    else if(substr['a'+(i+j)%26]<len-j){
+                        substr['a'+(i+j)%26] = len-j;
+                    }
+                    
+                }
+            }
+        }
+        
+        for(int i=0;i<26;i++){
+            for(int len=1;len<=longestlen;len++){
+                if(substr.find('a'+i)!=substr.end()){
+                    
+                    if(substr['a'+i]>=len){
+                        
+                        ans++;
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+};
+//官方是记录以p[i]结尾的最长连续子串的长度
+class Solution {
+public:
+    int findSubstringInWraproundString(string p) {
+        vector<int> dp(26);
+        int k = 0;
+        for (int i = 0; i < p.length(); ++i) {
+            if (i && (p[i] - p[i - 1] + 26) % 26 == 1) { // 字符之差为 1 或 -25
+                ++k;
+            } else {
+                k = 1;
+            }
+            dp[p[i] - 'a'] = max(dp[p[i] - 'a'], k);
+        }
+        return accumulate(dp.begin(), dp.end(), 0);
+    }
+};
+
