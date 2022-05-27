@@ -1,0 +1,23 @@
+//59%
+class Solution {
+public:
+    int findClosest(vector<string>& words, string word1, string word2) {
+        int word1_pos = -1;
+        int word2_pos = -1;
+        int ans = words.size() - 1;
+        int i=0;
+        for(string word:words){
+            if(word==word1){
+                word1_pos = i;
+            }
+            else if(word==word2){
+                word2_pos = i;
+            }
+            if(word1_pos!=-1&&word2_pos!=-1){
+                ans = min(ans,abs(word1_pos-word2_pos));
+            }
+            i++;
+        }
+        return ans;
+    }
+};
