@@ -1,0 +1,69 @@
+//en用线段树搞了，之后再看看别的做法，注意是end-1  7.9%
+class MyCalendar {
+public:
+    
+    unordered_map<int,pair<bool,bool>> tree;
+    MyCalendar() {
+
+    }
+    
+    bool book(int start, int end) {
+        
+        bool ans = query(start,end-1,0,1e9,1);
+        if(ans==false){
+            insert(start,end-1,0,1e9,1);
+            return true;
+        }
+        return false;
+    }
+    void insert(int start,int end,int l,int r,int idx){
+            int mid = (l+r)>>1;
+
+            if(start>r||end<l){
+                return ;
+            }
+            if(tree.find(idx)==tree.end()){
+                tree[idx].first = false;
+                tree[idx].second = false;
+            }
+            if(start<=l&&end>=r){
+                return ;
+            }
+
+            if(end<=mid){
+                insert(start,end,l,mid,2*idx);
+                tree[idx].first = true;
+            }
+            else if(start>mid){
+                insert(start,end,mid+1,r,2*idx+1);
+                tree[idx].second = true;
+            }
+            else{
+                insert(start,mid,l,mid,2*idx);
+                tree[idx].first = true;
+                insert(mid+1,end,mid+1,r,2*idx+1);
+                tree[idx].second = true;
+            }
+            
+        return ;
+    }
+
+    bool query(int start,int end,int l,int r,int idx){
+        if(start>r||end<l) return false;
+        int mid = (l+r)>>1;
+        if(tree.find(idx)!=tree.end()){
+            if(start<=l&&end>=r) return true;
+            if(tree[idx].first==false&&tree[idx].second==false){
+                return true;
+            }
+            else return query(start,end,l,mid,2*idx)||query(start,end,mid+1,r,2*idx+1);
+        }
+        else return false;
+    }
+};
+
+/**
+ * Your MyCalendar object will be instantiated and called as such:
+ * MyCalendar* obj = new MyCalendar();
+ * bool param_1 = obj->book(start,end);
+ */ 
