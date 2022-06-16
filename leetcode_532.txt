@@ -1,0 +1,33 @@
+//双指针但是各种情况没有很好的考虑到
+class Solution {
+public:
+    int findPairs(vector<int>& nums, int k) {
+        int i = 0;
+        int j = 1;
+        int ans = 0;
+        sort(nums.begin(),nums.end());
+        while(i<=j&&j<nums.size()){
+            if(i==j&&j==nums.size()-1) break;
+            if(i==j) j++;
+            //cout<<nums[i]<<" "<<nums[j]<<endl;
+            if(nums[j]-nums[i]<k){
+                j++;
+            }
+            else if(nums[j]-nums[i]>k){
+                i++;
+            }
+            else{
+                ans++;
+                
+                int temp = nums[i];
+                while(i<nums.size()&&temp==nums[i]){
+                   i++;
+                   
+                }
+                j = i+1; 
+                
+            } 
+        }
+        return ans;
+    }
+};
