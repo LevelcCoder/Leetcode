@@ -1,0 +1,87 @@
+//脑筋急转弯，对于动态规划不太熟练
+class Solution {
+public:
+    int findLUSlength(vector<string>& strs) {
+        int ans[51] = {0};
+        
+        for(int i=0;i<strs.size();i++){
+            for(int j=0;j<strs.size();j++){
+                if(i!=j&&strs[i].size()<=strs[j].size()){
+                    
+                    int stri[11][11] = {0};
+                    int k1=1;
+                    int k2=1;
+                    if(strs[i][0]==strs[j][0]) stri[0][0] = 1;
+                    for(int m=1;m<strs[j].size();m++){
+                        stri[0][m] = stri[0][m-1];
+                        if(strs[i][0]==strs[j][m]) stri[0][m] = 1; 
+                    }
+                    for(int m=1;m<strs[i].size();m++){
+                        stri[m][0] = stri[m-1][0];
+                        if(strs[j][0]==strs[i][m]) stri[m][0] = 1; 
+                    }
+                    for(k1=1;k1<strs[i].size();k1++){
+                       for(k2=1;k2<strs[j].size();k2++){
+                          if(strs[i][k1]==strs[j][k2]){
+                            stri[k1][k2] = stri[k1-1][k2-1] + 1;
+                            }
+                            else{
+                            stri[k1][k2] = max(stri[k1-1][k2],stri[k1][k2-1]);
+                            } 
+
+                       }
+                        
+                    }
+                    
+                    if(stri[strs[i].size()-1][strs[j].size()-1]==strs[i].size()){
+                        
+                        ans[i] = -1; 
+                    }
+                    
+                }
+                
+            }
+            if(ans[i]!=-1) ans[i] = strs[i].size();
+            
+        }
+        int fans = -1;
+        for(int i=0;i<strs.size();i++){
+            fans = max(ans[i],fans);
+        }
+        return fans;
+
+    }
+};
+//官方题解
+class Solution {
+public:
+    int findLUSlength(vector<string>& strs) {
+        auto is_subseq = [](const string& s, const string& t) -> bool {
+            int pt_s = 0, pt_t = 0;
+            while (pt_s < s.size() && pt_t < t.size()) {
+                if (s[pt_s] == t[pt_t]) {
+                    ++pt_s;
+                }
+                ++pt_t;
+            }
+            return pt_s == s.size();
+        };
+
+        int n = strs.size();
+        int ans = -1;
+        for (int i = 0; i < n; ++i) {
+            bool check = true;
+            for (int j = 0; j < n; ++j) {
+                if (i != j && is_subseq(strs[i], strs[j])) {
+                    check = false;
+                    break;
+                }
+            }
+            if (check) {
+                ans = max(ans, static_cast<int>(strs[i].size()));
+            }
+        }
+        return ans;
+    }
+};
+
