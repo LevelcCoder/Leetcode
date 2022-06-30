@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int MAX = 1e9+7;
+    bool isprime(int x){
+        if(x<2) return false;
+        
+        for(int i=2;i<(int)sqrt(x*1.0)+1;i++){//小于号
+            if(x%i==0) return false;
+        }
+        return true;
+    }
+    int numPrimeArrangements(int n) {
+        if(n==1) return 1;
+        int cnt = 0;
+        for(int i=2;i<=n;i++){
+            if(isprime(i)) cnt++;
+        }
+        
+        long ans1 = 1;
+        for(int i=cnt;i>1;i--){
+            ans1 = ((ans1%MAX)*i)%MAX;
+        }
+        
+        long ans2 = 1;
+        for(int i=n-cnt;i>1;i--){
+            ans2 = ((ans2%MAX)*i)%MAX;
+        }
+        return (ans1*ans2)%MAX;
+    }
+};
