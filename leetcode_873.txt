@@ -1,0 +1,30 @@
+//动态规划+哈希记录
+class Solution {
+public:
+    int lenLongestFibSubseq(vector<int>& arr) {
+
+        unordered_map<int,int> rec;
+        int n = arr.size();
+        int dp[1001][1001] = {0};
+        for(int i=0;i<n;i++) {
+            rec[arr[i]]=i;
+            dp[i][i] = 1;
+        }
+        int ans = 2;
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                if(rec.find(arr[j] - arr[i])!=rec.end()&&rec[arr[j]-arr[i]]<i){
+                    
+                    dp[i][j] = max(dp[i][j],dp[rec[arr[j]-arr[i]]][i]+1);
+                    
+                }
+                else dp[i][j] = dp[i][i] + 1;
+
+                ans = max(ans,dp[i][j]);
+                
+            }
+        }
+        if(ans<3) ans = 0;
+        return ans;
+    }
+};
