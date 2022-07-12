@@ -1,0 +1,25 @@
+//easy but 100%
+class Solution {
+public:
+    int oddCells(int m, int n, vector<vector<int>>& indices) {
+        int row[50] = {0};
+        int col[50] = {0};
+        int len = indices.size();
+        int ans = 0;
+        for(int i=0;i<len;i++){
+            row[indices[i][0]]++;
+            col[indices[i][1]]++;
+        }
+        int colj = 0;
+        int colo = 0;
+        for(int i=0;i<n;i++){
+            if(col[i]%2==0) colo++;
+            else colj++;
+        }
+        for(int i=0;i<m;i++){
+            if(row[i]%2==0) ans += colj;
+            else ans += colo;
+        }
+        return ans;
+    }
+};
