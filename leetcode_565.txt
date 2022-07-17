@@ -1,0 +1,52 @@
+//many circles
+class Solution {
+public:
+    int arrayNesting(vector<int>& nums) {
+        int visited[200001] = {0};
+        int cnt = 0;
+        int ans = 0;
+        int n = nums.size();
+        int pos = 0;
+        while(!visited[pos]){
+            while(!visited[pos]){
+            visited[pos] = 1;
+            
+            pos = nums[pos];
+            cnt++;
+            }
+            ans = max(ans,cnt);
+            //cout<<cnt<<endl;
+            
+            cnt = 0;
+            for(int i=0;i<n;i++){
+                if(!visited[i]){
+                    pos = i;
+                    
+                    break;
+                }
+            }
+            
+        }
+        return ans;
+
+    }
+};
+//官方题解，思路是一样的但是代码更简洁
+class Solution {
+public:
+    int arrayNesting(vector<int> &nums) {
+        int ans = 0, n = nums.size();
+        vector<int> vis(n);
+        for (int i = 0; i < n; ++i) {
+            int cnt = 0;
+            while (!vis[i]) {
+                vis[i] = true;
+                i = nums[i];
+                ++cnt;
+            }
+            ans = max(ans, cnt);
+        }
+        return ans;
+    }
+};
+
