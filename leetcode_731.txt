@@ -1,0 +1,113 @@
+//线段树三重预定
+class SegTree{
+public:
+    SegTree *left;
+    SegTree *right;
+    int cnt;
+    int lazy;
+    SegTree(){
+        left = NULL;
+        right = NULL;
+        cnt = 0;
+        lazy = 0;
+    }
+};
+void pushdown(SegTree* node){
+    if(node->left==NULL){
+        node->left = new SegTree();
+    }
+    if(node->right==NULL){
+        node->right = new SegTree();
+    }
+    int lazy = node->lazy;
+        node->left->cnt += lazy;
+        node->right->cnt += lazy;
+        node->left->lazy += lazy;
+        node->right->lazy += lazy;
+        node->lazy = 0;
+    
+}
+bool query(long l,long r,int s,int e,SegTree *root){
+    if(l>=s&&r<=e){
+        if(root->cnt>=2) return false;
+        else return true;
+    }
+    pushdown(root);
+    int mid = (l+r)>>1;
+    bool ll = true;
+    bool rr = true;
+    if(s<=mid){
+        ll = query(l,mid,s,e,root->left);
+    }
+    if(mid<e){
+        rr = query(mid+1,r,s,e,root->right);
+    }
+    return ll&&rr;
+}
+void insert(long l,long r,int s,int e,SegTree *root){
+    if(l>=s&&r<=e){
+        
+        root->cnt++;
+        
+        root->lazy++;
+        return ;
+    }
+    pushdown(root);
+    int mid = (l+r)>>1;
+    if(s<=mid){
+        insert(l,mid,s,e,root->left);
+    }
+    if(mid<e){
+        insert(mid+1,r,s,e,root->right);
+    }
+    root->cnt = max(root->left->cnt,root->right->cnt);//pushup
+    return ;
+}
+class MyCalendarTwo {
+public:
+    SegTree* root = NULL;
+    MyCalendarTwo() {
+    root = new SegTree();
+    }
+    
+    bool book(int start, int end) {
+        if(query(0,10e9,start,end-1,root)){
+           insert(0,10e9,start,end-1,root); 
+           return true;
+        }
+        return false;
+         
+    }
+};
+
+/**
+ * Your MyCalendarTwo object will be instantiated and called as such:
+ * MyCalendarTwo* obj = new MyCalendarTwo();
+ * bool param_1 = obj->book(start,end);
+ */
+//直接遍历
+class MyCalendarTwo {
+public:
+    MyCalendarTwo() {
+
+    }
+
+    bool book(int start, int end) {
+        for (auto &[l, r] : overlaps) {
+            if (l < end && start < r) {
+                return false;
+            }
+        }
+        for (auto &[l, r] : booked) {
+            if (l < end && start < r) {
+                overlaps.emplace_back(max(l, start), min(r, end));
+            }
+        }
+        booked.emplace_back(start, end);
+        return true;
+    }
+private:
+    vector<pair<int, int>> booked;
+    vector<pair<int, int>> overlaps;
+};
+
