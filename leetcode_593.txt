@@ -1,0 +1,49 @@
+//判定是否为正方形
+class Solution {
+public:
+    bool validSquare(vector<int>& p1, vector<int>& p2, vector<int>& p3, vector<int>& p4) {
+        int mid = 0;
+        int left = 0;
+        int right = 0;
+        bool longer[3] = {false};
+        left += (p2[0]-p1[0])*(p2[0]-p1[0])+(p2[1]-p1[1])*(p2[1]-p1[1]);
+        right += (p3[0]-p1[0])*(p3[0]-p1[0])+(p3[1]-p1[1])*(p3[1]-p1[1]);
+        mid += (p4[0]-p1[0])*(p4[0]-p1[0])+(p4[1]-p1[1])*(p4[1]-p1[1]);
+        int temp = max(left,right);
+        temp = max(temp,mid);
+        if(temp==0) return false;
+        if(left==temp){
+            left = mid;
+            mid = temp;
+            longer[0] = true;
+        }
+        else if(right==temp){
+            right = mid;
+            mid = temp;
+            longer[1] = true;
+        }
+        else{
+            longer[2] = true; 
+        }
+        if(mid==2*left&&left==right){
+            double midx = 0;
+            double midy = 0;
+            if(longer[0]){
+                midx = 1.0*(p1[0]+p2[0])/2;
+                midy = 1.0*(p1[1]+p2[1])/2;
+                if(midx==1.0*(p3[0]+p4[0])/2&&midy==1.0*(p3[1]+p4[1])/2) return true;
+            }
+            else if(longer[1]){
+                midx = 1.0*(p1[0]+p3[0])/2;
+                midy = 1.0*(p1[1]+p3[1])/2;
+                if(midx==1.0*(p2[0]+p4[0])/2&&midy==1.0*(p2[1]+p4[1])/2) return true;
+            }
+            else if(longer[2]){
+                midx = 1.0*(p1[0]+p4[0])/2;
+                midy = 1.0*(p1[1]+p4[1])/2;
+                if(midx==1.0*(p3[0]+p2[0])/2&&midy==1.0*(p3[1]+p2[1])/2) return true;
+            }
+        }
+        return false;
+    }
+};
