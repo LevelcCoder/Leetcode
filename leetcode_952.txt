@@ -1,0 +1,51 @@
+//并查集的应用，之前的应用都太明显了还用了压缩路径
+
+class Solution {
+private:
+    static const int N = 100005;
+    int parent[N];
+public:
+    
+
+    int find(int x){
+        int y = x;
+        while(parent[x]!=x) x = parent[x];
+        while(y!=x){
+            y = parent[y];
+            parent[y] = x;
+
+        }
+        return x;
+    }
+    void union2(int x,int y){
+    int parentx = find(x);
+    int parenty = find(y);
+    parent[parentx] = parenty;
+    }
+
+    int largestComponentSize(vector<int>& nums) {
+        
+        for(int i=0;i<N;i++){
+            parent[i] = i;
+        }
+        for(int num:nums){
+            for(int j=2;j*j<=num;j++){
+                if(num%j==0){
+                    union2(num,j);
+                    union2(num/j,num);
+                }
+            }
+        }
+        map<int,int> cnt;
+        int ans = 0;
+        for(int num:nums){
+            int root = find(num);
+            if(cnt.find(root)==cnt.end()){
+                cnt[root] = 1;
+            }
+            else cnt[root]++;
+            ans = max(ans,cnt[root]);
+        }
+        return ans;
+    }
+};
