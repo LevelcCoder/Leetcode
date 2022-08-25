@@ -1,0 +1,88 @@
+//总之是个double pointer
+class Solution {
+public:
+    int binary(vector<int>& arr, int low, int high,int key){
+        
+        while(low<=high){
+            int mid = (low+high)/2;
+            if(arr[mid]>key) high = mid-1;
+            else low = mid+1;
+        }
+
+        return high;
+    }
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        int n = arr.size();
+        vector<int> ans;
+
+        if(x<=arr[0]){
+            ans.assign(arr.begin(),arr.begin()+k);
+            return ans;
+        } 
+        if(x>=arr[n-1]){
+            ans.assign(arr.begin()+n-k,arr.end());
+            return ans;
+        }
+
+        stack<int> small;
+        queue<int> big;
+
+        int bound_lower = binary(arr,0,n-1,x);
+        int i = bound_lower;
+        int j = bound_lower+1;
+        
+        while(k&&i>-1&&j<n){
+            if(x-arr[i]<=arr[j]-x) {
+                small.push(arr[i--]);
+            }
+            else big.push(arr[j++]);
+            k--;
+        }
+        
+        if(k){
+            if(i==-1){
+                while(k){
+                    big.push(arr[j++]);
+                    k--;
+                }
+            }
+            else{
+                while(k){
+                    small.push(arr[i--]);
+                    k--;
+                }
+            }
+        }
+        while(!small.empty()){
+            ans.push_back(small.top());
+            small.pop();
+        }
+        while(!big.empty()){
+            ans.push_back(big.front());
+            big.pop();
+        }
+        return ans;
+    }
+};
+
+//好简洁！！！！
+class Solution {
+public:
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        int right = lower_bound(arr.begin(), arr.end(), x) - arr.begin();
+        int left = right - 1;
+        while (k--) {
+            if (left < 0) {
+                right++;
+            } else if (right >= arr.size()) {
+                left--;
+            } else if (x - arr[left] <= arr[right] - x) {
+                left--;
+            } else {
+                right++;
+            }
+        }
+        return vector<int>(arr.begin() + left + 1, arr.begin() + right);
+    }
+};
+
