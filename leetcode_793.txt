@@ -1,0 +1,25 @@
+这题答案不是5，就是0，如果能找到f(x) = k，就那一定是5个
+
+比如11!时k=2,10!，11!，12!，13!，14!都是2
+
+k=5为0是因为20!贡献了4个5因子，25!贡献了6个5因子。
+
+所以我们二分搜索5因子数是否等于k即可。
+
+class Solution {
+public:
+     int preimageSizeFZF(int k) {
+        long l = k - 1,r = k * 10L + 1;
+        while(l + 1 < r){
+            long m = (l + r) >> 1,t = f(m);
+            if(t == k) return 5;
+            else if(t < k) l = m;
+            else r = m;
+        }
+        return 0;
+    }
+    long f(long n){
+        if(n == 0) return 0;
+        return n / 5 + f(n / 5);
+    }
+};
