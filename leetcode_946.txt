@@ -1,0 +1,17 @@
+一个简单的栈模拟
+class Solution {
+public:
+    bool validateStackSequences(vector<int>& pushed, vector<int>& popped) {
+        stack<int> stk;
+        int k = 0;
+        int n = popped.size();
+        for(int i=0;i<n;i++){
+            while(stk.empty()||stk.top()!=popped[i]){
+                if(k>=n) return false;
+                stk.push(pushed[k++]);
+            }
+            stk.pop();
+        }
+        return stk.empty();
+    }
+};
