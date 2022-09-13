@@ -1,0 +1,64 @@
+class Solution {
+public:
+    int maximumSwap(int num) {
+        vector<int> nums;
+        stack<int> stk;
+        while(num){
+            nums.push_back(num%10);
+            num/=10;
+        }
+        int ans = 0;
+        int n = nums.size();
+        int k1 = 0;
+        int k2 = 0;
+        for(int i=n-1;i>-1;i--){
+            while(!stk.empty()) stk.pop();
+            stk.push(nums[i]);
+            k1 = i;
+            for(int j=i-1;j>-1;j--){
+                if(nums[j]>=stk.top()){
+                    stk.push(nums[j]);
+                    k2 = j;
+                }
+            }
+            if(stk.size()>1&&nums[k1]<nums[k2]){
+                int temp = nums[k1];
+                nums[k1] = nums[k2];
+                nums[k2] = temp;
+                break;
+            }
+        }
+
+        for(int i=n-1;i>-1;i--){
+            ans*=10;
+            ans += nums[i];
+        }
+
+        return ans;
+    }
+};
+
+//模拟单调栈
+class Solution {
+public:
+    int maximumSwap(int num) {
+        string charArray = to_string(num);
+        int n = charArray.size();
+        int maxIdx = n - 1;
+        int idx1 = -1, idx2 = -1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (charArray[i] > charArray[maxIdx]) {
+                maxIdx = i;
+            } else if (charArray[i] < charArray[maxIdx]) {
+                idx1 = i;
+                idx2 = maxIdx;
+            }
+        }
+        if (idx1 >= 0) {
+            swap(charArray[idx1], charArray[idx2]);
+            return stoi(charArray);
+        } else {
+            return num;
+        }
+    }
+};
