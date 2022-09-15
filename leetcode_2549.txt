@@ -1,0 +1,60 @@
+//官方题解，也是位运算
+class Solution {
+public:
+    int maxProduct(vector<string>& words) {
+        int length = words.size();
+        vector<int> masks(length);
+        for (int i = 0; i < length; i++) {
+            string word = words[i];
+            int wordLength = word.size();
+            for (int j = 0; j < wordLength; j++) {
+                masks[i] |= 1 << (word[j] - 'a');
+            }
+        }
+        int maxProd = 0;
+        for (int i = 0; i < length; i++) {
+            for (int j = i + 1; j < length; j++) {
+                if ((masks[i] & masks[j]) == 0) {
+                    maxProd = max(maxProd, int(words[i].size() * words[j].size()));
+                }
+            }
+        }
+        return maxProd;
+    }
+};
+
+///////////////////////////////
+class Solution {
+public:
+    int maxProduct(vector<string>& words) {
+        int n = words.size();
+        vector<int> rec(n,0);
+        
+        for(int i=0;i<n;i++){
+
+            for(int j=0;j<words[i].size();j++){
+                int tag = 1;
+                if(words[i][j]-'a'>0){
+                    tag <<=(words[i][j]-'a');
+                    
+                }
+                rec[i] = rec[i]|tag;
+            }
+            
+        }
+        
+        int ans = 0;
+        for(int i=0;i<n;i++){
+            for(int j=i+1;j<n;j++){
+                
+                if((rec[i]&rec[j])==0){
+                    int len1 = words[i].size();
+                    int len2 = words[j].size();
+                    ans = max(ans,len1*len2);
+                }
+            }
+        }
+
+        return ans;
+    }
+};
