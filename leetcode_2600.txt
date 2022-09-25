@@ -1,0 +1,23 @@
+//从末尾开始的递减单调栈
+class Solution {
+public:
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        int n = temperatures.size();
+        vector<int> ans(n,0);
+        stack<pair<int,int>> rec;
+        int topk = n-1;
+        rec.push(make_pair(temperatures[n-1],n-1));
+        for(int i=n-2;i>=0;i--){
+            
+            while(!rec.empty()&&temperatures[i]>=rec.top().first){//这里是重点！！！！！！！！！！！
+                
+                rec.pop();
+            }
+            if(!rec.empty())
+            ans[i] = rec.top().second-i;
+            rec.push(make_pair(temperatures[i],i));
+
+        }
+        return ans;
+    }
+};
