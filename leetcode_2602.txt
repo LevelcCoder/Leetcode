@@ -1,0 +1,74 @@
+//单调栈+枚举高的柱状图的进阶版（注意遇到0要全部出栈）
+class Solution {
+public:
+    int maximalRectangle(vector<string>& matrix) {
+        int m = matrix.size();
+        if(m==0) return 0;
+        int n = matrix[0].size();
+        int heights[205][205] = {0};
+        int left[205][205] = {0};
+        int right[205][205] = {0};
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]=='1'){
+                   if(i>0){
+                    heights[i][j] = matrix[i-1][j]=='0'?1:heights[i-1][j]+1;
+                    } 
+                    else heights[i][j] = 1;
+                    
+                }
+                
+            }
+        }
+
+        for(int i=0;i<m;i++){
+            int lz = -1;
+            stack<int> stk = stack<int>();
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]=='1'){
+                    while(!stk.empty()&&heights[i][stk.top()]>=heights[i][j]){
+                        stk.pop();
+                    }
+                    left[i][j] = stk.empty()?lz:stk.top();
+                    
+                    stk.push(j);
+                }
+                else{
+                    while(!stk.empty()) stk.pop();
+                    lz = j;
+                } 
+            }
+        }
+        
+        for(int i=0;i<m;i++){
+            int rz = n;
+            stack<int> stk = stack<int>();
+            for(int j=n-1;j>=0;j--){
+                if(matrix[i][j]=='1'){
+                    while(!stk.empty()&&heights[i][stk.top()]>=heights[i][j]){
+                        stk.pop();
+                    }
+                    right[i][j] = stk.empty()?rz:stk.top();
+                    
+                    stk.push(j);
+                }
+                else {
+                    while(!stk.empty()) stk.pop();
+                    rz = j;
+                }
+            }
+        }
+
+        int ans = 0;
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(matrix[i][j]=='1'){
+                    
+                    ans = max(ans,(right[i][j]-left[i][j]-1)*heights[i][j]);
+                }
+            }
+        }
+
+        return ans;
+    }
+};
