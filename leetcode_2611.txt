@@ -1,0 +1,177 @@
+//序列化与反序列化
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Codec {
+public:
+
+    // Encodes a tree to a single string.
+    string serialize(TreeNode* root) {
+        
+        string ans = "";
+        if(root==NULL) return ans;
+        queue<TreeNode*> que;
+        que.push(root);
+        ans += to_string(root->val);
+        ans += ",";
+        while(!que.empty()){
+            TreeNode* cur = que.front();
+            que.pop();
+           
+            if(cur->left!=NULL){
+                que.push(cur->left);
+                ans += to_string(cur->left->val);
+                ans += ",";
+            }
+            else{
+                ans += "n,";
+            }
+            if(cur->right!=NULL){
+                que.push(cur->right);
+                ans += to_string(cur->right->val);
+                ans += ",";
+
+            }
+            else{
+                ans += "n,";
+            }
+        }
+        
+        
+        return ans;
+    }
+
+    // Decodes your encoded data to tree.
+    TreeNode* deserialize(string data) {
+        
+        if(data=="") return NULL;
+        int n = data.size();
+        TreeNode* root = NULL;
+        queue<TreeNode*> que;
+        int i = 0;
+        int flag = 0;
+        while(i<n){
+            if(que.empty()){
+                string snum = "";
+                while(isdigit(data[i])||data[i]=='-'){
+                snum += data[i];
+                i++;
+                }
+                i++;
+                int num = stoi(snum);
+                TreeNode* node = new TreeNode(num);
+                root = node;
+                que.push(node);
+            }
+            
+
+            else{
+
+                TreeNode* cur = que.front();
+                que.pop();
+                
+                if(data[i]=='n'){
+                    
+                    i+=2;
+                }
+                else{
+                    string snum = "";
+                    while(isdigit(data[i])||data[i]=='-'){
+                    snum += data[i];
+                    i++;
+                    }
+                    i++;
+                    int num = stoi(snum);
+                    TreeNode* node = new TreeNode(num);
+
+                    cur->left = node;
+                    que.push(node);
+                }
+
+                if(data[i]=='n'){
+                    
+                    i+=2;
+                }
+                else{
+                    string snum = "";
+                    while(isdigit(data[i])||data[i]=='-'){
+                    snum += data[i];
+                    i++;
+                    }
+                    i++;
+                    int num = stoi(snum);
+                    TreeNode* node = new TreeNode(num);
+
+                    cur->right = node;
+                    que.push(node);
+                }
+                
+
+
+            }
+            
+        }
+
+        return root;
+    }
+};
+
+// Your Codec object will be instantiated and called as such:
+// Codec ser, deser;
+// TreeNode* ans = deser.deserialize(ser.serialize(root));
+
+//官方题解递归解码
+class Codec {
+public:
+    string serialize(TreeNode* root) {
+        if (!root) {
+            return "X";
+        }
+        auto left = "(" + serialize(root->left) + ")";
+        auto right = "(" + serialize(root->right) + ")";
+        return left + to_string(root->val) + right;
+    }
+
+    inline TreeNode* parseSubtree(const string &data, int &ptr) {
+        ++ptr; // 跳过左括号
+        auto subtree = parse(data, ptr);
+        ++ptr; // 跳过右括号
+        return subtree;
+    }
+
+    inline int parseInt(const string &data, int &ptr) {
+        int x = 0, sgn = 1;
+        if (!isdigit(data[ptr])) {
+            sgn = -1;
+            ++ptr;
+        }
+        while (isdigit(data[ptr])) {
+            x = x * 10 + data[ptr++] - '0';
+        }
+        return x * sgn;
+    }
+
+    TreeNode* parse(const string &data, int &ptr) {
+        if (data[ptr] == 'X') {
+            ++ptr;
+            return nullptr;
+        }
+        auto cur = new TreeNode(0);
+        cur->left = parseSubtree(data, ptr);
+        cur->val = parseInt(data, ptr);
+        cur->right = parseSubtree(data, ptr);
+        return cur;
+    }
+
+    TreeNode* deserialize(string data) {
+        int ptr = 0;
+        return parse(data, ptr);
+    }
+};
+
