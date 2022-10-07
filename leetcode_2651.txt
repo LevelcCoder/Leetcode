@@ -1,0 +1,60 @@
+//经典二分查找吃香蕉
+官方题解
+class Solution {
+public:
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int low = 1;
+        int high = 0;
+        for (int pile : piles) {
+            high = max(high, pile);
+        }
+        int k = high;
+        while (low < high) {
+            int speed = (high - low) / 2 + low;
+            long time = getTime(piles, speed);
+            if (time <= h) {
+                k = speed;
+                high = speed;
+            } else {
+                low = speed + 1;
+            }
+        }
+        return k;
+    }
+
+    long getTime(const vector<int>& piles, int speed) {
+        long time = 0;
+        for (int pile : piles) {
+            int curTime = (pile + speed - 1) / speed;
+            time += curTime;
+        }
+        return time;
+    }
+};
+
+//自己写的二分+排序，其实完全可以不排序
+class Solution {
+public:
+    bool check(vector<int>& piles, int h, int k){
+        int time = 0;
+        
+        for(int i=piles.size()-1;i>=0;i--){
+            time += (piles[i]+k-1)/k;
+        }
+        
+        return time<=h;
+    }
+    int minEatingSpeed(vector<int>& piles, int h) {
+        
+        sort(piles.begin(),piles.end());
+        int l = 1;
+        int r = piles[piles.size()-1];
+        while(l<r){
+            int m = (l+r)>>1;
+            if(check(piles,h,m)) r = m;
+            else l = m+1;
+        }
+        
+        return r;
+    }
+};
