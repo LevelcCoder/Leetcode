@@ -1,0 +1,46 @@
+class Solution {
+public:
+    vector<int> ans,dp,sz,flag;//sz是所有子孙的个数
+    vector<vector<int> > graph;
+    void dfs(int u){
+        flag[u] = 1;
+        for(int v:graph[u]){
+            if(flag[v]==0){
+                dfs(v);
+                sz[u] += sz[v]+1;
+                dp[u] += dp[v];
+            }
+            
+        }
+        dp[u] += sz[u];
+        
+    }
+    void dfs2(int u,int n){
+        ans[u] = dp[u];
+        for(int v:graph[u]){
+            if(ans[v]==0){
+                int du = dp[u];
+                dp[u] -= dp[v]+sz[v]+1;
+                dp[v] += (n-sz[v]-1 + dp[u]);//树形dp
+                dfs2(v,n);
+                dp[u] = du;
+                
+            }
+        }
+        
+    }
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>>& edges) {
+        ans.resize(n,0);
+        dp.resize(n,0);
+        sz.resize(n,0);
+        flag.resize(n,0);
+        graph.resize(n);
+        for(vector<int> edge:edges){
+            graph[edge[0]].emplace_back(edge[1]);
+            graph[edge[1]].emplace_back(edge[0]);
+        }
+        dfs(0);
+        dfs2(0,n);
+        return ans;
+    }
+};
